@@ -21,18 +21,18 @@ public class Appointment : IBaseEntity<int>
     {
         model.Entity<Appointment>()
             .HasOne(a => a.Dentist)
-            .WithMany(u => u.Appointments)
+            .WithMany(u => u.DentistAppointments)
             .HasForeignKey(a => a.DentistId);
 
         model.Entity<Appointment>()
             .HasOne(a => a.Patient)
-            .WithMany(u => u.Appointments)
+            .WithMany(u => u.PatientAppointments)
             .HasForeignKey(a => a.PatientId);
 
 
         model.Entity<Appointment>()
             .HasOne(a => a.Room)
-            .WithMany(u => u.Appointments)
+            .WithMany(r => r.Appointments)
             .HasForeignKey(a => a.RoomtId);
     }
 }
