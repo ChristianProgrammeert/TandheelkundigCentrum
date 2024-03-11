@@ -1,10 +1,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using TandheelkundigCentrum.Data.Base;
 
 namespace TandheelkundigCentrum.Data.Models;
 
+
+[Index(nameof(Email), IsUnique = true)]
 public class User : IBaseEntity<Guid>
 {
     [Key] public Guid Id { get; set; }
