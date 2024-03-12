@@ -11,10 +11,11 @@ namespace TandheelkundigCentrum.Controllers;
 public class AuthController(ApplicationDbContext context) : Controller
 {
     private AuthService service = new(context);
+    private JwtService jwtService = new();
 
     public IActionResult Login()
     {
-        if (Request.Cookies.ContainsKey("Token") && service.ValidateToken(Request.Cookies["Token"]))
+        if (Request.Cookies.ContainsKey("Token") && jwtService.ValidateToken(Request.Cookies["Token"]))
             return RedirectToAction("Index", "Home");
         return View(new LoginViewModel());
     }
@@ -42,9 +43,10 @@ public class AuthController(ApplicationDbContext context) : Controller
 
     public async Task<IActionResult> WhoAmI()
     {
-        if (Request.Cookies.ContainsKey("Token") && service.ValidateToken(Request.Cookies["Token"]))
-            return View(await service.GetUserByToken(Request.Cookies["Token"]));
-        return View();
+        if (!Request.Cookies.ContainsKey("Token") || !jwtService.ValidateToken(Request.Cookies["Token"])) 
+            return View();
+        var id = jwtService.GetUserId(Request.Cookies["Token"]);
+        return View(await service.GetByIdAsync(Guid.Parse(id)));
     }
     
     private void SetTokenCookie(User? user)
@@ -53,6 +55,6 @@ public class AuthController(ApplicationDbContext context) : Controller
         if (user == null)
             Response.Cookies.Delete("Token");
         else
-            Response.Cookies.Append("Token", service.GenerateToken(user), cookieOptions);
+            Response.Cookies.Append("Token", jwtService.GenerateToken(user), cookieOptions);
     }
 }
