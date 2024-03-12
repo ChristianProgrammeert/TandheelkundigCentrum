@@ -1,18 +1,38 @@
+using System.Net;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using TandheelkundigCentrum.Data;
+using TandheelkundigCentrum.Data.Models;
 using TandheelkundigCentrum.Services;
 
 namespace TandheelkundigCentrum.Filters;
 
-public class AuthFilter(ApplicationDbContext context) : IAuthorizationFilter
+public class AuhFilter(params Group.GroupName[] groups) : ActionFilterAttribute
 {
-    private readonly AuthService Service = new(context);
-    public void OnAuthorization(AuthorizationFilterContext context)
+    private readonly JwtService Service = new();
+
+    private string[] allowedPaths =
+    [
+        "/auth/login",
+    ];
+
+    public override void OnActionExecuting(ActionExecutingContext context)
     {
-        if (context.HttpContext.Request.Cookies.ContainsKey("Token") ||
+        base.OnActionExecuting(context);
+        if (!context.HttpContext.Request.Cookies.ContainsKey("Token") ||
             !Service.ValidateToken(context.HttpContext.Request.Cookies["Token"]))
         {
-            context.HttpContext.Response.Redirect("/Auth/Login/");
+            if (allowedPaths.All(s => s != context.HttpContext.Request.Path))
+                context.HttpContext.Response.Redirect($"Auth/Login/");
+            return;
         }
+
+        context.HttpContext.User = Service.GetClaimsIdentity(context.HttpContext.Request.Cookies["Token"]);
+        if (context.HttpContext.User.Claims.Any(
+                c => c.Type == "role" && groups.Any(g => g.ToString() == c.Value)
+            )) return;
+        context.HttpContext.Response.Clear();
+        context.Result = new UnauthorizedObjectResult("Unauthorized");
     }
 }
