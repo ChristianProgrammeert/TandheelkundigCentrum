@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
 using TandheelkundigCentrum.Data.Models;
 
 namespace TandheelkundigCentrum.Data;
@@ -19,5 +18,6 @@ public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
         Appointment.OnModelCreating(model);
         Group.OnModelCreating(model);
         Rating.OnModelCreating(model);
+        User.OnModelCreating(model);
     }
 }

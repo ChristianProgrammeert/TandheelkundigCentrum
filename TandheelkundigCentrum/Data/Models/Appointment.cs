@@ -22,12 +22,15 @@ public class Appointment : IBaseEntity<int>
         model.Entity<Appointment>()
             .HasOne(a => a.Dentist)
             .WithMany(u => u.DentistAppointments)
-            .HasForeignKey(a => a.DentistId);
+            .HasForeignKey(a => a.DentistId)
+            .OnDelete(DeleteBehavior.NoAction);
+
 
         model.Entity<Appointment>()
             .HasOne(a => a.Patient)
             .WithMany(u => u.PatientAppointments)
-            .HasForeignKey(a => a.PatientId);
+            .HasForeignKey(a => a.PatientId)
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         model.Entity<Appointment>()
