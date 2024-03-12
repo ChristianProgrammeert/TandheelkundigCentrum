@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TandheelkundigCentrum.Data;
 using TandheelkundigCentrum.Data.Models;
+using TandheelkundigCentrum.Filters;
 using TandheelkundigCentrum.Services;
 
 namespace TandheelkundigCentrum.Controllers
 {
+    [AuthFilter(Group.GroupName.Admin, Group.GroupName.Assistent, Group.GroupName.Dentist)]
     public class RoomController : Controller
     {
         private readonly RoomService roomService;
