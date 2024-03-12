@@ -8,7 +8,7 @@ using TandheelkundigCentrum.Services;
 
 namespace TandheelkundigCentrum.Filters;
 
-public class AuhFilter(params Group.GroupName[] groups) : ActionFilterAttribute
+public class AuthFilter(params Group.GroupName[] groups) : ActionFilterAttribute
 {
     private readonly JwtService Service = new();
 
