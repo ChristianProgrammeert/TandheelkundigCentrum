@@ -23,7 +23,12 @@
                     <div class="d-flex flex-row float-end">
                     Bewerk
                     </div>
-                </th>
+				</th>
+				<th scope="col">
+					<div class="d-flex flex-row float-end">
+						Verwijder
+					</div>
+				</th>
             </tr>
         </thead>
         <tbody>
@@ -44,7 +49,17 @@
                                 </button>
                             </a>
                         </div>
-                    </td>
+					</td>
+					<td>
+						<div class="d-flex flex-row float-end">
+							<a asp-action="Delete" asp-route-id="@room.Id">
+								<button type="button" class="btn btn-danger">
+									<i class="bi bi-trash"></i>
+									Verwijder
+								</button>
+							</a>
+						</div>
+					</td>
                 </tr>
             }
         </tbody>
