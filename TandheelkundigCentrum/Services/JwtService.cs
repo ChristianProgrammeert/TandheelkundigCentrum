@@ -23,6 +23,7 @@ public class JwtService
             [
                 new Claim(ClaimTypes.Name, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.Fullname),
                 .. user.Groups.Select(g => new Claim(ClaimTypes.Role, g.Name.ToString())).ToList(),
             ]),
             Expires = DateTime.UtcNow.AddHours(1),
@@ -61,8 +62,7 @@ public class JwtService
     }
 
 
-
-	public ClaimsPrincipal GetClaimsIdentity(string? token)
+    public ClaimsPrincipal GetClaimsIdentity(string? token)
     {
         var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
         var identity = new ClaimsIdentity(jsonToken?.Claims, "Bearer");
@@ -82,6 +82,14 @@ public class JwtService
         if (!ValidateToken(token)) return null;
         var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
         var nameClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == "email");
+        return nameClaim?.Value;
+    }
+
+    public string? GetUsername(string? token)
+    {
+        if (!ValidateToken(token)) return null;
+        var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+        var nameClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == "given_name");
         return nameClaim?.Value;
     }
 }
