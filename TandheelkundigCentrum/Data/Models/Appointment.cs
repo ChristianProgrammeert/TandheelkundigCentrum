@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using TandheelkundigCentrum.Data.Base;
@@ -12,10 +13,12 @@ public class Appointment : IBaseEntity<int>
     public User Dentist { get; set; }
     public Guid PatientId { get; set; }
     public User Patient { get; set; }
-    public int RoomtId { get; set; }
+    public int RoomId { get; set; }
     public Room Room { get; set; }
     public DateTime DateTime { get; set; }
     public string Note { get; set; }
+
+    public Collection<Treatment> Treatments { get; set; }
 
     internal static void OnModelCreating(ModelBuilder model)
     {
@@ -36,6 +39,10 @@ public class Appointment : IBaseEntity<int>
         model.Entity<Appointment>()
             .HasOne(a => a.Room)
             .WithMany(r => r.Appointments)
-            .HasForeignKey(a => a.RoomtId);
+            .HasForeignKey(a => a.RoomId);
+
+        model.Entity<Appointment>()
+            .HasMany(a => a.Treatments)
+            .WithMany(t => t.Appointments);
     }
 }

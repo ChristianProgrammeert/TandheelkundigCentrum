@@ -1,0 +1,88 @@
+﻿@model AppointmentViewModel
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Afspraak maken" : "Afspraak bewerken";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <p>
+            <h4>@ViewData["Title"]</h4>
+        </p>
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Sorry!</b> - @TempData["Error"] </span>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="@(Model.Id == 0 ? "CreateAppointment" : "EditAppointment")">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @if (Model.Id != 0)
+                    {
+                        <input type="hidden" asp-for="Id" />
+                    }
+
+                    <div class="form-group">
+                        <label for="SelectedTreatmentIds">Behandelingen:</label>
+                        <select asp-for="SelectedTreatmentIds" class="form-control" multiple>
+                            @foreach (var treatment in Model.Treatments)
+                            {
+                                <option value="@treatment.Id">@treatment.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="SelectedTreatmentIds" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DentistId">Tandarts:</label>
+                        <select asp-for="DentistId" class="form-control">
+                            <option value="">-- Selecteer Tandarts --</option>
+                            @foreach (var dentist in Model.Dentists)
+                            {
+                                <option value="@dentist.Id">@dentist.Prefix @dentist.LastName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="DentistId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="PatientId">Patient:</label>
+                        <select asp-for="PatientId" class="form-control">
+                            <option value="">-- Selecteer Patient --</option>
+                            @foreach (var patient in Model.Patients)
+                            {
+                                <option value="@patient.Id">@patient.Prefix @patient.LastName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="PatientId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="RoomId">Kamer:</label>
+                        <select asp-for="RoomId" class="form-control">
+                            <option value="">-- Selecteer Kamer --</option>
+                            @foreach (var room in Model.Rooms)
+                            {
+                                <option value="@room.Id">@room.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="RoomId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DateTime">Appointment Date and Time:</label>
+                        <input asp-for="DateTime" class="form-control" type="datetime-local">
+                        <span asp-validation-for="DateTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Note">Note:</label>
+                        <textarea asp-for="Note" class="form-control"></textarea>
+                        <span asp-validation-for="Note" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">@(Model.Id == 0 ? "Maak Afspraak" : "Update Afspraak")</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

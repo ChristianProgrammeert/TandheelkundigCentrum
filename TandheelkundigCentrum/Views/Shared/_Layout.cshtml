@@ -58,7 +58,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="" asp-controller="Room" class="nav-link px-0 align-middle">
+                                    <a asp-area="" asp-controller="Appointment" asp-action="Index" class="nav-link px-0 align-middle">
                                         <i class="bi bi-file-ruled"></i>
                                         <span class="ms-1 d-none d-sm-inline">Behandelingen</span>
                                     </a>
@@ -70,17 +70,17 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="Identity" asp-page="/Account/Login" class="nav-link px-0 align-middle">
+                                    <a asp-controller="Auth" asp-action="Login" class="nav-link px-0 align-middle">
                                         <i class="bi bi-box-arrow-in-right"></i>
                                         <span class="ms-1 d-none d-sm-inline">Inloggen</span>
                                     </a>
                                 </li>
-                                <li>
+@*                                 <li>
                                     <a asp-area="Identity" asp-page="/Account/Register" class="nav-link px-0 align-middle">
                                         <i class="bi bi-file-earmark-person"></i>
                                         <span class="ms-1 d-none d-sm-inline">Registreren</span>
                                     </a>
-                                </li>
+                                </li> *@
                             </ul>
                             <div class="dropdown pb-4">
                                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">

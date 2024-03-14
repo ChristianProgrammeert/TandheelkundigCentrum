@@ -1,0 +1,85 @@
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TandheelkundigCentrum.Data;
+using TandheelkundigCentrum.Data.Base;
+using TandheelkundigCentrum.Data.Models;
+using TandheelkundigCentrum.Models;
+
+namespace TandheelkundigCentrum.Services
+{
+    public class AppointmentService(ApplicationDbContext context) : BaseRepository<Appointment, int>(context)
+    {
+
+        public async Task<List<Appointment>> GetAllAppointments()
+        {
+            // Retrieve appointments from the database
+            var all = await GetAllAsync(appointment => appointment.Dentist, appointment => appointment.Patient, appointment => appointment.Room);
+            return all.ToList();
+        }
+
+        public async Task<Appointment?> GetAppointmentById(int id)
+        {
+            // Retrieve appointments from the database by user id.
+            return await GetByIdAsync(id, appointment => appointment.Dentist, appointment => appointment.Patient, appointment => appointment.Room);
+        }
+
+        public async Task<List<Treatment>> GetAllTreatmentsForAppointment(int appointmentId)
+        {
+            // Retrieve treatments from the database including appointments
+            return await context.Treatments
+                .Where(t => t.Appointments.Any(a => a.Id == appointmentId))
+                .ToListAsync();
+        }
+
+        public async Task<List<Appointment>> GetUserAppointments(Guid currentuserid)
+        {
+            // Retrieve appointments from the database
+            return await context.Appointments.Where(u => u.PatientId == currentuserid).ToListAsync();
+        }
+
+        public async Task<List<Appointment>> GetDentistAppointments(Guid currentuserid)
+        {
+            // Retrieve appointments from the database
+            return await context.Appointments.Where(u => u.DentistId == currentuserid).ToListAsync();
+        }
+
+        public async Task<List<Treatment>> GetAllTreatments()
+        {
+            // Retrieve treatments from the database including appointments
+            return await context.Treatments
+                .Include(t => t.Appointments) // Eager load appointments
+                .ToListAsync();
+        }
+
+        public async Task<List<User>> GetAllDentists()
+        {
+            // Retrieve dentists from the database
+            return await context.Users.Where(u => u.Groups.Any(g => g.Name == Group.GroupName.Dentist)).ToListAsync();
+        }
+
+        public async Task<List<User>> GetAllPatients()
+        {
+            // Retrieve patients from the database
+            return await context.Users.Where(u => u.Groups.Any(g => g.Name == Group.GroupName.Patient)).ToListAsync();
+        }
+
+        public async Task CreateAppointment(CreateAppointmentViewModel model)
+        {
+            // Create a new appointment based on the model data
+            Appointment appointment = new Appointment
+            {
+                DentistId = model.DentistId,
+                PatientId = model.PatientId,
+                RoomId = model.RoomId,
+                DateTime = model.DateTime,
+                // Assign other properties as needed
+            };
+
+            // Add the appointment to the database
+            context.Appointments.Add(appointment);
+            await context.SaveChangesAsync();
+        }
+    }
+}
