@@ -1,0 +1,67 @@
+﻿@model IEnumerable<TandheelkundigCentrum.Data.Models.Room>
+@{
+	ViewData["Title"] = "Kamers";
+}
+
+<div>
+    <div class="d-flex flex-row justify-content-between">
+        <h1 class="display-4">Kamers</h1>
+        <div class="d-flex align-items-center">
+            <a asp-action="Edit">
+                <button type="button" class="btn btn-success">
+                    <i class="bi bi-house-add"></i>
+                    Kamer Toevoegen
+                </button>
+            </a>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Kamer</th>
+                <th scope="col">
+                    <div class="d-flex flex-row float-end">
+                    Bewerk
+                    </div>
+				</th>
+				<th scope="col">
+					<div class="d-flex flex-row float-end">
+						Verwijder
+					</div>
+				</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in Model)
+            {
+                <tr>
+                    <td scope="row">
+                        <a asp-action="View" asp-route-id="@room.Id">
+                            @room.Name
+                        </a>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-row float-end">
+                            <a asp-action="Edit" asp-route-roomId="@room.Id">
+                                <button type="button" class="btn btn-warning">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Bewerk
+                                </button>
+                            </a>
+                        </div>
+					</td>
+					<td>
+						<div class="d-flex flex-row float-end">
+							<a asp-action="Delete" asp-route-id="@room.Id">
+								<button type="button" class="btn btn-danger">
+									<i class="bi bi-trash"></i>
+									Verwijder
+								</button>
+							</a>
+						</div>
+					</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
