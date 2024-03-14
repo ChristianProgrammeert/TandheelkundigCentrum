@@ -1,120 +1,142 @@
-﻿<!DOCTYPE html>
+﻿@using TandheelkundigCentrum.Services
+
+@{
+	var token = this.Context.Request.Cookies["Token"];
+	var jwtService = new JwtService();
+	bool isLoggedIn;
+	var userEmail = "";
+	if (token == null || !jwtService.ValidateToken(token)) isLoggedIn = false;
+	else isLoggedIn = true;
+
+	if (isLoggedIn)
+	{
+		userEmail = jwtService.GetUserEmail(token);
+	}
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TandheelkundigCentrum</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - TandheelkundigCentrum</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/TandheelkundigCentrum.styles.css" asp-append-version="true" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style scoped>
-        body {
-            margin: 0;
-            padding: 0;
-        }
+	<style scoped>
+		body {
+			margin: 0;
+			padding: 0;
+		}
 
-        .custom-bg {
-            background-color: #7B5DB9; /* indigo-500 */
-        }
+		.custom-bg {
+			background-color: #7B5DB9; /* indigo-500 */
+		}
 
-        .nav-link {
-            color: white;
-        }
+		.nav-link {
+			color: white;
+		}
 
-    </style>
+	</style>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="container-fluid">
-                <div class="row flex-nowrap">
-                    <div class="col-auto col-md-4 col-xl-3 px-sm-2 px-0 custom-bg" style="max-width: 250px">
-                        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                            <div class="d-flex justify-content-center align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none" style="width: 100%;">
-                                <a asp-area="" asp-controller="Home" asp-action="Index" class="text-center">
-                                    <img src="~/assets/img/icon-logo-main-page-tandheelkundigcentrum.png" alt="TandheelkundigCentrum" class="img-fluid" style="max-height: 100px; max-width: 100px; object-fit: contain;" />
-                                </a>
-                            </div>
+	<header>
+		<nav>
+			<div class="container-fluid">
+				<div class="row flex-nowrap">
+					<div class="col-auto col-md-4 col-xl-3 px-sm-2 px-0 custom-bg" style="max-width: 250px">
+						<div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+							<div class="d-flex justify-content-center align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none" style="width: 100%;">
+								<a asp-area="" asp-controller="Home" asp-action="Index" class="text-center">
+									<img src="~/assets/img/icon-logo-main-page-tandheelkundigcentrum.png" alt="TandheelkundigCentrum" class="img-fluid" style="max-height: 100px; max-width: 100px; object-fit: contain;" />
+								</a>
+							</div>
 
-                            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                                <li class="nav-item">
-                                    <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link align-middle px-0">
-                                        <i class="bi bi-person-badge"></i>
-                                        <span class="ms-1 d-none d-sm-inline">Medewerkers</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link align-middle px-0">
-                                        <i class="bi bi-calendar-event"></i>
-                                        <span class="ms-1 d-none d-sm-inline">Afspraken</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-area="" asp-controller="Room" class="nav-link px-0 align-middle">
-                                        <i class="bi bi-house"></i>
-                                        <span class="ms-1 d-none d-sm-inline">Kamers</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-area="" asp-controller="Room" class="nav-link px-0 align-middle">
-                                        <i class="bi bi-file-ruled"></i>
-                                        <span class="ms-1 d-none d-sm-inline">Behandelingen</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-area="" asp-controller="Room" class="nav-link px-0 align-middle">
-                                        <i class="bi bi-star"></i>
-                                        <span class="ms-1 d-none d-sm-inline">Beoordelingen</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-area="Identity" asp-page="/Account/Login" class="nav-link px-0 align-middle">
-                                        <i class="bi bi-box-arrow-in-right"></i>
-                                        <span class="ms-1 d-none d-sm-inline">Inloggen</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-area="Identity" asp-page="/Account/Register" class="nav-link px-0 align-middle">
-                                        <i class="bi bi-file-earmark-person"></i>
-                                        <span class="ms-1 d-none d-sm-inline">Registreren</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <div class="dropdown pb-4">
-                                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i width="30" height="30" class="bi bi-person-circle"></i>
-                                    <span class="d-none d-sm-inline mx-1">Sukkel</span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">Uitloggen</a></li>
-                                </ul>
-                            </div>
-                            <hr>
-                        </div>
-                    </div>
-                    <main role="main" class="col py-3">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    @RenderBody()
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            </div>
-        </nav>
-    </header>
+							<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+								<li class="nav-item">
+									<a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link align-middle px-0">
+										<i class="bi bi-person-badge"></i>
+										<span class="ms-1 d-none d-sm-inline">Medewerkers</span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link align-middle px-0">
+										<i class="bi bi-calendar-event"></i>
+										<span class="ms-1 d-none d-sm-inline">Afspraken</span>
+									</a>
+								</li>
+								<li>
+									<a asp-area="" asp-controller="Room" class="nav-link px-0 align-middle">
+										<i class="bi bi-house"></i>
+										<span class="ms-1 d-none d-sm-inline">Kamers</span>
+									</a>
+								</li>
+								<li>
+									<a asp-area="" asp-controller="Room" class="nav-link px-0 align-middle">
+										<i class="bi bi-file-ruled"></i>
+										<span class="ms-1 d-none d-sm-inline">Behandelingen</span>
+									</a>
+								</li>
+								<li>
+									<a asp-area="" asp-controller="Room" class="nav-link px-0 align-middle">
+										<i class="bi bi-star"></i>
+										<span class="ms-1 d-none d-sm-inline">Beoordelingen</span>
+									</a>
+								</li>
+								@if (!isLoggedIn)
+								{
+									<li>
+										<a asp-area="" asp-controller="Auth" asp-action="Login" class="nav-link px-0 align-middle">
+											<i class="bi bi-box-arrow-in-right"></i>
+											<span class="ms-1 d-none d-sm-inline">Inloggen</span>
+										</a>
+									</li>
+								}
+								<li>
+									<a asp-area="Identity" asp-page="/Account/Register" class="nav-link px-0 align-middle">
+										<i class="bi bi-file-earmark-person"></i>
+										<span class="ms-1 d-none d-sm-inline">Registreren</span>
+									</a>
+								</li>
+							</ul>
+							@if (isLoggedIn)
+							{
+								<div class="dropdown pb-4">
+									<a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+										<i width="30" height="30" class="bi bi-person-circle"></i>
+										<span class="d-none d-sm-inline mx-1">@userEmail</span>
+									</a>
+									<ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+										<li><a class="dropdown-item" href="#">New project...</a></li>
+										<li><a class="dropdown-item" href="#">Settings</a></li>
+										<li><a class="dropdown-item" href="#">Profile</a></li>
+										<li>
+											<hr class="dropdown-divider">
+										</li>
+										<li><a class="dropdown-item" asp-area="" asp-controller="Auth" asp-action="Logout">Uitloggen</a></li>
+									</ul>
+								</div>
+							}
+							<hr>
+						</div>
+					</div>
+					<main role="main" class="col py-3">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col">
+									@RenderBody()
+								</div>
+							</div>
+						</div>
+					</main>
+				</div>
+			</div>
+		</nav>
+	</header>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

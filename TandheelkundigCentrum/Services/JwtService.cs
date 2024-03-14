@@ -62,7 +62,7 @@ public class JwtService
 
 
 
-    public ClaimsPrincipal GetClaimsIdentity(string? token)
+	public ClaimsPrincipal GetClaimsIdentity(string? token)
     {
         var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
         var identity = new ClaimsIdentity(jsonToken?.Claims, "Bearer");
@@ -74,6 +74,14 @@ public class JwtService
         if (!ValidateToken(token)) return null;
         var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
         var nameClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == "unique_name");
+        return nameClaim?.Value;
+    }
+
+    public string? GetUserEmail(string? token)
+    {
+        if (!ValidateToken(token)) return null;
+        var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+        var nameClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == "email");
         return nameClaim?.Value;
     }
 }
