@@ -4,13 +4,13 @@
     var token = this.Context.Request.Cookies["Token"];
     var jwtService = new JwtService();
     bool isLoggedIn;
-    var userEmail = "";
+	var userName = "";
     if (token == null || !jwtService.ValidateToken(token)) isLoggedIn = false;
     else isLoggedIn = true;
 
     if (isLoggedIn)
     {
-        userEmail = jwtService.GetUserEmail(token);
+		userName = jwtService.GetUsername(token);
     }
 }
 
@@ -71,8 +71,7 @@
         <nav>
             <div class="container-fluid">
                 <div class="d-flex row flex-nowrap">
-                    <div class="col-auto @* col-md-4 col-xl-3 px-sm-2 *@ px-0 custom-bg fixed-top max-width-sidebar">
-                        <!-- Added class to toggle collapsed state -->
+                    <div class="col-auto col-md-4 col-xl-3 px-sm-2 px-0 custom-bg fixed-top max-width-sidebar">
                         <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100 collapsed-sidebar">
                             <div class="d-flex justify-content-center align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none" style="width: 100%;">
                                 <a asp-area="" asp-controller="Home" asp-action="Index" class="text-center">
@@ -132,24 +131,17 @@
                                 <div class="dropdown pb-4">
                                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i width="30" height="30" class="bi bi-person-circle"></i>
-                                        <span class="d-none d-sm-inline mx-1">@userEmail</span>
+                                        <span class="d-none d-sm-inline mx-1">@userName</span>
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                                        <li><a class="dropdown-item" href="#">New project...</a></li>
-                                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="Auth" asp-action="Logout">Uitloggen</a></li>
+                                    <ul class="dropdown-menu dropdown-menu-dark text-black text-small shadow" aria-labelledby="dropdownUser1">
+                                        <li><a class="dropdown-item text-black" asp-area="" asp-controller="Auth" asp-action="Logout">Uitloggen</a></li>
                                     </ul>
                                 </div>
                             }
                             <hr>
                         </div>
                     </div>
-                    <!-- Adjusted width to fit remaining space -->
-                    <main role="main" class="col py-3 offset-md-4 offset-xl-2"@>
+                    <main role="main" class="col py-3 offset-md-4 offset-xl-2">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col">

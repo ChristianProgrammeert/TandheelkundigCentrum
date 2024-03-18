@@ -28,10 +28,9 @@ public class AuthFilter(params Group.GroupName[] groups) : ActionFilterAttribute
             return;
         }
 
-        context.HttpContext.User = Service.GetClaimsIdentity(context.HttpContext.Request.Cookies["Token"]);
-        if (context.HttpContext.User.Claims.Any(
-                c => c.Type == "role" && groups.Any(g => g.ToString() == c.Value)
-            )) return;
+        var token = context.HttpContext.Request.Cookies["Token"];
+        context.HttpContext.User = Service.GetClaimsIdentity(token);
+        if (Service.GetUserGroups(token)?.Any(groups.Contains) == true) return;
         context.HttpContext.Response.Clear();
         context.Result = new UnauthorizedObjectResult("Unauthorized");
     }

@@ -15,6 +15,10 @@ public class User : IBaseEntity<Guid>
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Prefix { get; set; }
+
+    [NotMapped]
+    public string Fullname => $"{Prefix} {LastName}, {FirstName}".Trim(' ').Trim(',');
+
     public string Password { get; set; }
     public string Address { get; set; }
     public string PostalCode { get; set; }
