@@ -8,7 +8,7 @@ namespace TandheelkundigCentrum.Models
     public class CreateAppointmentViewModel
     {
         [Required(ErrorMessage = "Selecteer minstens één behandeling")]
-        public List<int> SelectedTreatmentIds { get; set; } // Change to List<int> to store multiple treatment IDs
+        public List<int> SelectedTreatmentIds { get; set; }
 
         [Required(ErrorMessage = "Selecteer een tandarts")]
         public Guid DentistId { get; set; }

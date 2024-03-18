@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using TandheelkundigCentrum.Data;
 using TandheelkundigCentrum.Data.Models;
+using TandheelkundigCentrum.Filters;
 using TandheelkundigCentrum.Models;
 using TandheelkundigCentrum.Services;
 
@@ -11,16 +12,16 @@ namespace TandheelkundigCentrum.Controllers
 {
     public class AppointmentController(AppointmentService appointmentService) : Controller
     {
-
-        // Action to display a list of appointments
+        [AuthFilter(Group.GroupName.Assistent)]
         public async Task<IActionResult> Index()
         {
             // Retrieve appointments from the service
             List<Appointment> appointments = await appointmentService.GetAllAppointments();
             return View(appointments);
         }
-        
-        public async Task<IActionResult> Patient()
+
+        [AuthFilter(Group.GroupName.Patient)]
+        public async Task<IActionResult> Index()
         {
             var token = HttpContext.Request.Cookies["Token"];
             var id = new JwtService().GetUserId(token);
@@ -29,7 +30,8 @@ namespace TandheelkundigCentrum.Controllers
             return View(user_appointments);
         }
 
-        public async Task<IActionResult> Dentist()
+        [AuthFilter(Group.GroupName.Dentist)]
+        public async Task<IActionResult> Index()
         {
             var token = HttpContext.Request.Cookies["Token"];
             var id = new JwtService().GetUserId(token);
@@ -38,62 +40,50 @@ namespace TandheelkundigCentrum.Controllers
             return View(dentist_appointments);
         }
 
-        public async Task<IActionResult> CreateAppointmentAsync()
+        /// <summary>
+        /// View edit page for the appointment with the given id, if id is given.
+        /// </summary>
+        public async Task<IActionResult> Edit(int? appointmentId)
         {
-            // Populate dropdown lists or other necessary data
-            var model = new CreateAppointmentViewModel
-            {
-                Treatments = await appointmentService.GetAllTreatments(),
-                Dentists = await appointmentService.GetAllDentists(),
-                Patients = await appointmentService.GetAllPatients()
-            };
-
-            return View("EditAppointment", model); // Use the same view for create and edit
-        }
-
-        // Action to handle the submission of the appointment creation form
-        [HttpPost]
-        public async Task<IActionResult> CreateAppointment(CreateAppointmentViewModel model)
-        {
-            return await EditAppointment(model); // Treat create and edit similarly
-        }
-
-        // Action to display the edit form for an existing appointment
-        public async Task<IActionResult> EditAppointment(int? appointmentId)
-        {
-            if (appointmentId == null)
-            {
-                // Handle null appointment ID (e.g., return error view)
-            }
-
             // Retrieve existing appointment from the database
-            Appointment appointment = await appointmentService.GetByIdAsync(appointmentId.Value);
-            if (appointment == null)
+            Appointment appointment = await appointmentService.GetByIdAsync(appointmentId.Value)
+
+            if(appointmentId == null)
             {
-                // Handle non-existent appointment (e.g., return error view)
+                // Populate dropdown lists or other necessary data
+                var model = new CreateAppointmentViewModel
+                {
+                    Treatments = await appointmentService.GetAllTreatments(),
+                    Dentists = await appointmentService.GetAllDentists(),
+                    Patients = await appointmentService.GetAllPatients()
+                };
+
+                return View("EditAppointment", model);
             }
-
-            // Populate dropdown lists or other necessary data
-            var model = new CreateAppointmentViewModel
+            else
             {
-                Treatments = await appointmentService.GetAllTreatments(),
-                Dentists = await appointmentService.GetAllDentists(),
-                Patients = await appointmentService.GetAllPatients(),
-                // Set properties from existing appointment for editing
-                SelectedTreatmentIds = appointment.Treatments.Select(t => t.Id).ToList(),
-                DentistId = appointment.DentistId,
-                PatientId = appointment.PatientId,
-                RoomId = appointment.RoomId,
-                DateTime = appointment.DateTime,
-                Note = appointment.Note
-            };
+                // Populate dropdown lists or other necessary data
+                var model = new CreateAppointmentViewModel
+                {
+                    Treatments = await appointmentService.GetAllTreatments(),
+                    Dentists = await appointmentService.GetAllDentists(),
+                    Patients = await appointmentService.GetAllPatients(),
+                    // Set properties from existing appointment for editing
+                    SelectedTreatmentIds = appointment.Treatments.Select(t => t.Id).ToList(),
+                    DentistId = appointment.DentistId,
+                    PatientId = appointment.PatientId,
+                    RoomId = appointment.RoomId,
+                    DateTime = appointment.DateTime,
+                    Note = appointment.Note
+                };
 
-            return View("EditAppointment", model); // Use the same view for create and edit
+                return View("EditAppointment", model);
+            }
         }
 
         // Action to handle the submission of the appointment edit form
         [HttpPost]
-        public async Task<IActionResult> EditAppointment(CreateAppointmentViewModel model)
+        public async Task<IActionResult> Edit(CreateAppointmentViewModel model)
         {
             if (ModelState.IsValid)
             {
