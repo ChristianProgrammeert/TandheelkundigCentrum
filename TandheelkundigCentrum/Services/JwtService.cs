@@ -92,4 +92,14 @@ public class JwtService
         var nameClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == "given_name");
         return nameClaim?.Value;
     }
+
+    public IEnumerable<Group.GroupName>? GetUserGroups(string? token)
+    {
+        if (!ValidateToken(token)) return null;
+        var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+        var nameClaim = jsonToken?.Claims.Where(c => c.Type == "role");
+        return nameClaim?.Select(
+            claim => Enum.Parse<Group.GroupName>(claim.Value)
+        );
+    }
 }
