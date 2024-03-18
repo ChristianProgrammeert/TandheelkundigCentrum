@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using TandheelkundigCentrum.Data;
 using TandheelkundigCentrum.Data.Base;
@@ -23,6 +24,11 @@ namespace TandheelkundigCentrum.Services
         {
             // Retrieve appointments from the database by user id.
             return await GetByIdAsync(id, appointment => appointment.Dentist, appointment => appointment.Patient, appointment => appointment.Room);
+        }
+
+        internal async Task<List<Room>> GetAllAvailableRooms()
+        {
+            return await context.Rooms;   
         }
 
         public async Task<List<Treatment>> GetAllTreatmentsForAppointment(int appointmentId)
@@ -65,21 +71,33 @@ namespace TandheelkundigCentrum.Services
             return await context.Users.Where(u => u.Groups.Any(g => g.Name == Group.GroupName.Patient)).ToListAsync();
         }
 
-        public async Task CreateAppointment(CreateAppointmentViewModel model)
-        {
-            // Create a new appointment based on the model data
-            Appointment appointment = new Appointment
-            {
-                DentistId = model.DentistId,
-                PatientId = model.PatientId,
-                RoomId = model.RoomId,
-                DateTime = model.DateTime,
-                // Assign other properties as needed
-            };
+        //public async Task CreateAppointment(CreateAppointmentViewModel model)
+        //{
+        //    // Create a new appointment based on the model data
+        //    Appointment appointment = new Appointment
+        //    {
+        //        //public Guid DentistId { get; set; }
+        //        //public User Dentist { get; set; }
+        //        //public Guid PatientId { get; set; }
+        //        //public User Patient { get; set; }
+        //        //public int RoomId { get; set; }
+        //        //public Room Room { get; set; }
+        //        //public DateTime DateTime { get; set; }
+        //        //public string Note { get; set; }
+        //        //public Collection<Treatment> Treatments { get; set; }
+        //        DentistId = model.DentistId,
+        //        PatientId = model.PatientId,
+        //        RoomId = model.RoomId,
+        //        DateTime = model.DateTime,
 
-            // Add the appointment to the database
-            context.Appointments.Add(appointment);
-            await context.SaveChangesAsync();
-        }
+                
+        //    };
+
+        //    // Add the appointment to the database
+        //    context.Appointments.Add(appointment);
+        //    await context.SaveChangesAsync();
+        //}
+
+
     }
 }

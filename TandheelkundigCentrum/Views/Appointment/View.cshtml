@@ -4,7 +4,7 @@
 }
 <div>
     <div class="d-flex flex-row justify-content-between">
-        <h1 class="display-4">@Model.Name</h1>
+        <h1 class="display-4">Afspraaknummer: @Model.Id</h1>
         <div class="d-flex align-items-center">
             <a asp-action="Index">
                 <button type="button" class="btn btn-info">
@@ -21,39 +21,51 @@
             </a>
         </div>
     </div>
-    <h2>Patienten:</h2>
-    <sub>@Model.Patients.Count van de @Model.Capacity plekken bezet.</sub>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Naam</th>
-                <th scope="col">Ziekte</th>
-                <th scope="col">Eerste Contactpersoon</th>
-                <th scope="col">Tweede Contactpersoon</th>
-                <th scope="col">Leeftijd</th>
+                <th scope="col">Id</th>
+                <th scope="col">Tandarts</th>
+                <th scope="col">Patient</th>
+                <th scope="col">Kamer</th>
+                <th scope="col">Datum</th>
+                <th scope="col">Notitie</th>
+                <th scope="col">Bewerk</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var patient in Model.Patients)
-            {
-                <tr>
-                    <th scope="row">
-                        @patient.User.Prefix @patient.User.Name
-                    </th>
-                    <td>
-                        @patient.Illness
-                    </td>
-                    <td>
-                        @* @patient.ContactPrimary.Name *@
-                    </td>
-                    <td>
-                        @* @patient.ContactSecondary.Name *@
-                    </td>
-                    <td>
-                        @((patient.User.Birthdate.ToDateTime(TimeOnly.MinValue) - DateTime.Now).TotalDays / 365)
-                    </td>
-                </tr>
-            }
+            <tr>
+                <th scope="row">
+                    <a asp-action="View" asp-route-id="@Model.Id">
+                        @Model.Id
+                    </a>
+                </th>
+                <td>
+                    @Model.Dentist.Prefix @Model.Dentist.LastName
+                </td>
+                <td>
+                    @Model.Patient.Prefix @Model.Patient.LastName
+                </td>
+                <td>
+                    @Model.Room.Name
+                </td>
+                <td>
+                    @Model.DateTime
+                </td>
+                <td>
+                    @Model.Note
+                </td>
+                <td>
+                    <div class="d-flex flex-row float-end">
+                        <a asp-action="Edit" asp-route-appointmentId="@Model.Id">
+                            <button type="button" class="btn btn-warning">
+                                <i class="bi bi-pencil-square"></i>
+                                Bewerk
+                            </button>
+                        </a>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

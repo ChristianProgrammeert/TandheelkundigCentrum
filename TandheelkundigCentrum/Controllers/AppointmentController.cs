@@ -10,34 +10,27 @@ using TandheelkundigCentrum.Services;
 
 namespace TandheelkundigCentrum.Controllers
 {
-    public class AppointmentController(AppointmentService appointmentService) : Controller
+    public class AppointmentController(ApplicationDbContext context) : Controller
     {
-        [AuthFilter(Group.GroupName.Assistent)]
-        public async Task<IActionResult> Index()
-        {
-            // Retrieve appointments from the service
-            List<Appointment> appointments = await appointmentService.GetAllAppointments();
-            return View(appointments);
-        }
-
-        [AuthFilter(Group.GroupName.Patient)]
+        AppointmentService appointmentService = new(context);
+        AuthService userService = new(context);
         public async Task<IActionResult> Index()
         {
             var token = HttpContext.Request.Cookies["Token"];
             var id = new JwtService().GetUserId(token);
-            // Retrieve appointments from the service
-            List<Appointment> user_appointments = await appointmentService.GetUserAppointments(Guid.Parse(id));
-            return View(user_appointments);
-        }
+            var group = new JwtService().GetUserGroups(token);
+            var user = await userService.GetByIdAsync(Guid.Parse(id), user => user.DentistAppointments, user => user.PatientAppointments);
 
-        [AuthFilter(Group.GroupName.Dentist)]
-        public async Task<IActionResult> Index()
-        {
-            var token = HttpContext.Request.Cookies["Token"];
-            var id = new JwtService().GetUserId(token);
-            // Retrieve appointments from the service
-            List<Appointment> dentist_appointments = await appointmentService.GetDentistAppointments(Guid.Parse(id));
-            return View(dentist_appointments);
+            List<Appointment> appointments;
+            if(group.Contains(Group.GroupName.Assistent))
+            {
+                appointments = (await appointmentService.GetAllAsync()).ToList();
+            } else
+            {
+                appointments = user.Appointments;
+            }
+
+            return View(appointments);  
         }
 
         /// <summary>
@@ -45,30 +38,37 @@ namespace TandheelkundigCentrum.Controllers
         /// </summary>
         public async Task<IActionResult> Edit(int? appointmentId)
         {
-            // Retrieve existing appointment from the database
-            Appointment appointment = await appointmentService.GetByIdAsync(appointmentId.Value)
+            Appointment? appointment = appointmentId == null
+            ? null
+            : await appointmentService.GetByIdAsync(appointmentId.Value);
+            return View(appointment);
 
-            if(appointmentId == null)
+            // Check if appointmentId is provided
+            if (appointmentId == null)
             {
-                // Populate dropdown lists or other necessary data
+                // If appointmentId is not provided, create a new appointment
                 var model = new CreateAppointmentViewModel
                 {
                     Treatments = await appointmentService.GetAllTreatments(),
                     Dentists = await appointmentService.GetAllDentists(),
-                    Patients = await appointmentService.GetAllPatients()
+                    Patients = await appointmentService.GetAllPatients(),
+                    Rooms = await appointmentService.GetAllRooms() // Add this line to get all rooms
                 };
 
                 return View("EditAppointment", model);
             }
             else
             {
-                // Populate dropdown lists or other necessary data
+                // If appointmentId is provided, retrieve the existing appointment
+                Appointment appointment = await appointmentService.GetByIdAsync(appointmentId.Value);
+
+                // Populate the ViewModel with data from the existing appointment
                 var model = new CreateAppointmentViewModel
                 {
                     Treatments = await appointmentService.GetAllTreatments(),
                     Dentists = await appointmentService.GetAllDentists(),
                     Patients = await appointmentService.GetAllPatients(),
-                    // Set properties from existing appointment for editing
+                    Rooms = await appointmentService.GetAllRooms(), // Add this line to get all rooms
                     SelectedTreatmentIds = appointment.Treatments.Select(t => t.Id).ToList(),
                     DentistId = appointment.DentistId,
                     PatientId = appointment.PatientId,
@@ -83,26 +83,59 @@ namespace TandheelkundigCentrum.Controllers
 
         // Action to handle the submission of the appointment edit form
         [HttpPost]
-        public async Task<IActionResult> Edit(CreateAppointmentViewModel model)
+        public async Task<IActionResult> Edit(int? id, Appointment appointment)
         {
+            appointment = id == null
+            ? await appointmentService.AddAsync(appointment)
+            : await appointmentService.UpdateAsync(appointment);
+            return RedirectToAction("View", new { id = appointment.Id });
+
             if (ModelState.IsValid)
             {
-                // Update appointment using the service
-                // Here you would call a service method to update the appointment
-                // You can access the appointment properties from the model
-                // For example: appointmentService.Update(model)
+                Appointment appointment;
 
-                // After updating, redirect to appointments list or details page
-                return RedirectToAction("Appointments");
+                // Check if the id is null
+                if (id == null)
+                {
+                    // If id is null, it means it's a new appointment, so add it
+                    appointment = new Appointment
+                    {
+                        DentistId = model.DentistId,
+                        PatientId = model.PatientId,
+                        RoomId = model.RoomId,
+                        DateTime = model.DateTime,
+                        Note = model.Note,
+                        Treatments = model.SelectedTreatmentIds.Select(tid => new Treatment { Id = tid }).ToList()
+                    };
+                    appointment = await appointmentService.AddAsync(appointment);
+                }
+                else
+                {
+                    // If id is not null, it means it's an existing appointment, so update it
+                    appointment = await appointmentService.GetByIdAsync(id.Value);
+                    appointment.DentistId = model.DentistId;
+                    appointment.PatientId = model.PatientId;
+                    appointment.RoomId = model.RoomId;
+                    appointment.DateTime = model.DateTime;
+                    appointment.Note = model.Note;
+                    appointment.Treatments = model.SelectedTreatmentIds.Select(tid => new Treatment { Id = tid }).ToList();
+                    appointment = await appointmentService.UpdateAsync(appointment);
+                }
+
+                // After updating or adding, redirect to appointments list or details page
+                return RedirectToAction("Index");
             }
 
             // If model state is not valid, return to the form with validation errors
             model.Treatments = await appointmentService.GetAllTreatments();
             model.Dentists = await appointmentService.GetAllDentists();
             model.Patients = await appointmentService.GetAllPatients();
+            model.Rooms = await appointmentService.GetAllRooms(); // Add this line to get all rooms
 
-            return View("EditAppointment", model); // Use the same view for create and edit
+            return View("EditAppointment", model);
         }
+
+
 
         public async Task<ViewResult> View(int id)
         {
