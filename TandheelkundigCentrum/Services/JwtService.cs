@@ -93,13 +93,13 @@ public class JwtService
         return nameClaim?.Value;
     }
 
-    public IEnumerable<Group.GroupName>? GetUserGroups(string? token)
+    public IEnumerable<Group.GroupName> GetUserGroups(string? token)
     {
-        if (!ValidateToken(token)) return null;
+        if (!ValidateToken(token)) return [];
         var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
         var nameClaim = jsonToken?.Claims.Where(c => c.Type == "role");
         return nameClaim?.Select(
             claim => Enum.Parse<Group.GroupName>(claim.Value)
-        );
+        ) ?? [];
     }
 }
