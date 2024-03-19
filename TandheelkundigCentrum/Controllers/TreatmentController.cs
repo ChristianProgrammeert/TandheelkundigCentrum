@@ -27,6 +27,7 @@ namespace TandheelkundigCentrum.Controllers
             Treatment? treatment = treatmentId == null
                 ? null
                 : await treatmentService.GetByIdAsync(treatmentId.Value);
+
             return View(treatment);
         }
 
@@ -37,9 +38,16 @@ namespace TandheelkundigCentrum.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int? id, Treatment treatment)
         {
-            treatment = id == null
-                ? await treatmentService.AddAsync(treatment)
-                : await treatmentService.UpdateAsync(treatment);
+            if (id == null)
+            {
+                treatment.Archived = false;
+                treatment = await treatmentService.AddAsync(treatment);
+            }
+            else
+            {
+                treatment.Archived = true;
+                treatment = await treatmentService.UpdateAsync(treatment);
+            }
             return RedirectToAction("View", new { id = treatment.Id });
         }
 
