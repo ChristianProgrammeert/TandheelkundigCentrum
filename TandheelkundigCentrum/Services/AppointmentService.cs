@@ -26,37 +26,35 @@ namespace TandheelkundigCentrum.Services
             return await GetByIdAsync(id, appointment => appointment.Dentist, appointment => appointment.Patient, appointment => appointment.Room);
         }
 
-        internal async Task<List<Room>> GetAllAvailableRooms()
+        internal async Task<List<Room>> GetAllRooms()
         {
-            return await context.Rooms;   
+            return await context.Rooms.ToListAsync();
         }
 
-        public async Task<List<Treatment>> GetAllTreatmentsForAppointment(int appointmentId)
+        //public async Task<List<Treatment>> GetAllTreatmentsForAppointment(int appointmentId)
+        //{
+        //    // Retrieve treatments from the database including appointments
+        //    return await context.Treatments
+        //        .Where(t => t.Appointments.Any(a => a.Id == appointmentId))
+        //        .ToListAsync();
+        //}
+
+        //public async Task<List<Appointment>> GetUserAppointments(Guid currentuserid)
+        //{
+        //    // Retrieve appointments from the database
+        //    return await context.Appointments.Where(u => u.PatientId == currentuserid).ToListAsync();
+        //}
+
+        //public async Task<List<Appointment>> GetDentistAppointments(Guid currentuserid)
+        //{
+        //    // Retrieve appointments from the database
+        //    return await context.Appointments.Where(u => u.DentistId == currentuserid).ToListAsync();
+        //}
+
+        public Task<List<Treatment>> GetAllTreatments()
         {
             // Retrieve treatments from the database including appointments
-            return await context.Treatments
-                .Where(t => t.Appointments.Any(a => a.Id == appointmentId))
-                .ToListAsync();
-        }
-
-        public async Task<List<Appointment>> GetUserAppointments(Guid currentuserid)
-        {
-            // Retrieve appointments from the database
-            return await context.Appointments.Where(u => u.PatientId == currentuserid).ToListAsync();
-        }
-
-        public async Task<List<Appointment>> GetDentistAppointments(Guid currentuserid)
-        {
-            // Retrieve appointments from the database
-            return await context.Appointments.Where(u => u.DentistId == currentuserid).ToListAsync();
-        }
-
-        public async Task<List<Treatment>> GetAllTreatments()
-        {
-            // Retrieve treatments from the database including appointments
-            return await context.Treatments
-                .Include(t => t.Appointments) // Eager load appointments
-                .ToListAsync();
+            return context.Treatments.ToListAsync();
         }
 
         public async Task<List<User>> GetAllDentists()
@@ -90,7 +88,7 @@ namespace TandheelkundigCentrum.Services
         //        RoomId = model.RoomId,
         //        DateTime = model.DateTime,
 
-                
+
         //    };
 
         //    // Add the appointment to the database

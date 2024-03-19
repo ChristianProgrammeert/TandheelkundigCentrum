@@ -18,7 +18,7 @@ public class Appointment : IBaseEntity<int>
     public DateTime DateTime { get; set; }
     public string Note { get; set; }
 
-    public List<Treatment> Treatments { get; set; }
+    public Collection<Treatment> Treatments { get; set; } = [];
 
     internal static void OnModelCreating(ModelBuilder model)
     {
