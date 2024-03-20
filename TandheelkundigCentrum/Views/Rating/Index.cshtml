@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TandheelkundigCentrum.Data.Models.Rating>
+@{
+	ViewData["Title"] = "Beoordelingen";
+}
+
+<div>
+    <div class="d-flex flex-row justify-content-between">
+        <h1 class="display-4">Beoordelingen</h1>
+        <div class="d-flex align-items-center">
+            <a asp-action="Rate">
+                <button type="button" class="btn btn-success">
+                    <i class="bi bi-house-add"></i>
+                    Beoordeling toevoegen
+                </button>
+            </a>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Behandelingnaam</th>
+                <th scope="col">Beoordeling</th>
+                <th scope="col">
+                    <div class="d-flex flex-row float-end">
+                    Wijzigen
+                    </div>
+				</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rating in Model)
+            {
+                <tr>
+                    <td scope="row">
+                        @rating.Treatment.Name
+                    </td>
+                    <td scope="row">
+                        @rating.Amount
+                        <span>minuten</span>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-row float-end">
+                            <a asp-action="Rate" asp-route-ratingId="@rating.Id">
+                                <button type="button" class="btn btn-warning">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Bewerk
+                                </button>
+                            </a>
+                        </div>
+					</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
