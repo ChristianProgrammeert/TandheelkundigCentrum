@@ -23,7 +23,7 @@ public class ColleagueController(ApplicationDbContext context) : Controller
     public async Task<IActionResult> Edit(Guid? colleagueId)
     {
         var user = colleagueId.HasValue
-            ? await userService.GetByIdAsync(colleagueId.Value)
+            ? await userService.GetByIdAsync(colleagueId.Value, u => u.Groups)
             : new User();
 
         return View(user);
@@ -67,7 +67,7 @@ public class ColleagueController(ApplicationDbContext context) : Controller
     [AuthFilter(GroupName.Admin)]
     public IActionResult View(Guid? guid)
     {
-        throw new NotImplementedException();
+        return RedirectToAction("Index");
     }
 
 

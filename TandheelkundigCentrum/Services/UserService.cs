@@ -14,6 +14,7 @@ public class UserService(ApplicationDbContext context) : BaseRepository<User, Gu
                     g => g.Name == Group.GroupName.Assistent || g.Name == Group.GroupName.Dentist
                     )
                 )
+            .Include(u => u.Groups)
             .ToListAsync();
         return colleagues;
     }

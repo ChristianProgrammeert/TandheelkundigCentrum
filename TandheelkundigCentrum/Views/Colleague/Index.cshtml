@@ -29,6 +29,7 @@
             <th scope="col">Email</th>
             @if (isAdmin)
             {
+                <th scope="col">Groepen</th>
                 <th scope="col">Bewerk</th>
             }
         </tr>
@@ -41,14 +42,14 @@
                 {
                     <th scope="row">
                         <a asp-action="View" asp-route-id="@colleague.Id">
-                            @colleague.Prefix @colleague.LastName, @colleague.FirstName
+                            @colleague.Fullname
                         </a>
                     </th>
                 }
                 else
                 {
                     <th scope="row">
-                        @colleague.Prefix @colleague.LastName, @colleague.FirstName
+                        @colleague.Fullname
                     </th>
                 }
                 <td>
@@ -56,6 +57,9 @@
                 </td>
                 @if (isAdmin)
                 {
+                    <th scope="row">
+                        @colleague.Groups.Aggregate(string.Empty, (s, group) => $"{s}{group.Name}, ")
+                    </th>
                     <td>
                         <div class="d-flex flex-row float-end">
                             <a asp-action="Edit" asp-route-colleagueId="@colleague.Id">
