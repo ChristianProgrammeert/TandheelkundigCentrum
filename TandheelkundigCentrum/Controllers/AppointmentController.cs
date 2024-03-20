@@ -13,48 +13,53 @@ namespace TandheelkundigCentrum.Controllers
     public class AppointmentController(ApplicationDbContext context) : Controller
     {
         AppointmentService appointmentService = new(context);
+        private TreatmentService treatmentService = new(context);
         AuthService userService = new(context);
+
         public async Task<IActionResult> Index()
         {
             var token = HttpContext.Request.Cookies["Token"];
             var id = new JwtService().GetUserId(token);
             var group = new JwtService().GetUserGroups(token);
-            var user = await userService.GetByIdAsync(Guid.Parse(id), user => user.DentistAppointments, user => user.PatientAppointments);
 
             List<Appointment> appointments;
-            if(group.Contains(Group.GroupName.Assistent))
-            {
-                appointments = (await appointmentService.GetAllAsync()).ToList();
-            } else
-            {
-                appointments = user.Appointments;
-            }
-
-            return View(appointments);  
+            if (group.Contains(Group.GroupName.Assistent))
+                appointments = (await appointmentService.GetAllAsync(appointment => appointment.Room)).ToList();
+            else
+                appointments = await appointmentService.GetAppointmentByUser(id);
+            return View(appointments);
         }
 
 
-        public async Task<IActionResult> Create()
+        private async Task fillViewBag()
         {
-            var appointment = new Appointment();
             ViewBag.Dentists = await appointmentService.GetAllDentists();
             ViewBag.Patients = await appointmentService.GetAllPatients();
             ViewBag.Treatments = await appointmentService.GetAllTreatments();
             ViewBag.Rooms = await appointmentService.GetAllRooms();
+        }
 
-            return View(appointment);
+        public async Task<IActionResult> Create()
+        {
+            await fillViewBag();
+            return View(new Appointment());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(Appointment model)
         {
-            var appointment = new Appointment();
-            ViewBag.Dentists = await appointmentService.GetAllDentists();
-            ViewBag.Patients = await appointmentService.GetAllPatients();
-            ViewBag.Treatments = await appointmentService.GetAllTreatments();
-            ViewBag.Rooms = await appointmentService.GetAllRooms();
-
-            return View(appointment);
+            var treatmentIds = HttpContext.Request.Form.Keys
+                .Where(k => k.StartsWith("treatment-"))
+                .Select(s => int.Parse(s.Replace("treatment-", ""))
+                );
+            model.Treatments = await treatmentService.FindByIds(treatmentIds);
+            if (!ModelState.IsValid)
+            {
+                await fillViewBag();
+                return View(model);
+            }
+            model = await appointmentService.AddAsync(model);
+            return RedirectToAction("View", new { id = model.Id });
         }
 
         /// <summary>
@@ -158,13 +163,14 @@ namespace TandheelkundigCentrum.Controllers
 
         //    return View("EditAppointment", model);
         //}
-
-
-
         public async Task<ViewResult> View(int id)
         {
             return View(await appointmentService.GetAppointmentById(id));
         }
 
+        public IActionResult Edit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

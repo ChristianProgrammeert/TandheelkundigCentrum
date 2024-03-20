@@ -10,13 +10,13 @@ public class Appointment : IBaseEntity<int>
 {
     [Key] public int Id { get; set; }
     public Guid DentistId { get; set; }
-    public User Dentist { get; set; }
+    public User? Dentist { get; set; }
     public Guid PatientId { get; set; }
-    public User Patient { get; set; }
+    public User? Patient { get; set; }
     public int RoomId { get; set; }
-    public Room Room { get; set; }
+    public Room? Room { get; set; }
     public DateTime DateTime { get; set; }
-    public string Note { get; set; }
+    public string Note { get; set; } = string.Empty;
 
     public Collection<Treatment> Treatments { get; set; } = [];
 

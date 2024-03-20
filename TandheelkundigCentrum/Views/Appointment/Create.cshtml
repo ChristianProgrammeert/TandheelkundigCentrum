@@ -35,36 +35,36 @@
 
         <div class="form-group">
             <label>Tandarts:</label>
-            <select asp-for="Dentist" class="form-control">
-                <option value="">-- Selecteer Tandarts --</option>
+            <select asp-for="DentistId" class="form-control">
+                <option>-- Selecteer Tandarts --</option>
                 @foreach (User dentist in ViewBag.Dentists)
                 {
-                    <option value="@dentist">@dentist.Fullname</option>
+                    <option value="@dentist.Id">@dentist.Fullname</option>
                 }
             </select>
-            <span asp-validation-for="Dentist" class="text-danger"></span>
+            <span asp-validation-for="DentistId" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label >Patient:</label>
-            <select asp-for="Patient" class="form-control">
+            <select asp-for="PatientId" class="form-control">
                 <option value="">-- Selecteer Patient --</option>
                 @foreach (User patient in ViewBag.Patients)
                 {
-                    <option value="@patient">@patient.Fullname</option>
+                    <option value="@patient.Id">@patient.Fullname</option>
                 }
             </select>
-            <span asp-validation-for="Patient" class="text-danger"></span>
+            <span asp-validation-for="PatientId" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label for="Room">Kamer:</label>
-            <select asp-for="Room" class="form-control">
-                <option value="Room">-- Selecteer Kamer --</option>
+            <select asp-for="RoomId" class="form-control">
+                <option value="">-- Selecteer Kamer --</option>
                 @foreach (Room room in ViewBag.Rooms)
                 {
-                    <option value="@room">@room.Name</option>
+                    <option value="@room.Id">@room.Name</option>
                 }
             </select>
-            <span asp-validation-for="Room" class="text-danger"></span>
+            <span asp-validation-for="RoomId" class="text-danger"></span>
         </div>
 
         <div class="form-group">

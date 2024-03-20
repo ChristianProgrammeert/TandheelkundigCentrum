@@ -39,13 +39,13 @@
                         </a>
                     </th>
                     <td> 
-                        Dr. @appointment.Dentist.LastName
+                        @appointment.Dentist.Fullname
                     </td>
                     <td>
-                        @appointment.Patient.Prefix @appointment.Patient.LastName
+                        @appointment.Patient.Fullname
                     </td>
                     <td>
-                        @appointment.Treatments
+                        @appointment.Treatments.Aggregate("", (s, treatment) => s = $"{s}, {treatment.Name}")
                     </td>
                     <td>
                         @appointment.Room.Name

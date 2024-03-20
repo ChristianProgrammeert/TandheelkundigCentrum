@@ -97,5 +97,15 @@ namespace TandheelkundigCentrum.Services
         //}
 
 
+        public async Task<List<Appointment>> GetAppointmentByUser(string? id)
+        {
+            return await context.Appointments
+                .Where(a => a.DentistId == Guid.Parse(id) || a.PatientId == Guid.Parse(id))
+                .Include(a => a.Room)
+                .Include(a => a.Treatments)
+                .Include(a => a.Dentist)
+                .Include(a => a.Patient)
+                .ToListAsync();
+        }
     }
 }

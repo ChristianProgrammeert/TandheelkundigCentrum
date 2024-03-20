@@ -45,7 +45,9 @@ public class User : IBaseEntity<Guid>
             new User
             {
                 Id = guid,
+                Prefix = "Dhr.",
                 FirstName = "Admin",
+                LastName = "Istrator",
                 Email = "admin@tandheelkundigcentrum.nl",
                 Password = PasswordHasher.HashPassword("admin"),
                 Birthdate = DateOnly.MinValue,
@@ -53,9 +55,7 @@ public class User : IBaseEntity<Guid>
                 City = "",
                 PostalCode = "",
                 Insurer = null,
-                LastName = "",
                 Phone = "",
-                Prefix = "",
             });
         model.Entity<Group>().HasData(
             new Group

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.ObjectModel;
+using Microsoft.AspNetCore.Mvc;
 using TandheelkundigCentrum.Data.Base;
 using TandheelkundigCentrum.Data.Models;
 using TandheelkundigCentrum.Data;
@@ -13,5 +14,13 @@ public class TreatmentService(ApplicationDbContext context) : BaseRepository<Tre
     public async Task<Treatment?> GetTreatment(int id)
     {
         return await GetByIdAsync(id);
+    }
+
+    public async Task<Collection<Treatment>> FindByIds(IEnumerable<int> treatmentIds)
+    {
+        Collection<Treatment> treatments = [];
+        foreach (var id in treatmentIds)
+            treatments.Add(await GetByIdAsync(id));
+        return treatments;
     }
 }
