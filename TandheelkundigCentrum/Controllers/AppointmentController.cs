@@ -24,7 +24,7 @@ namespace TandheelkundigCentrum.Controllers
 
             List<Appointment> appointments;
             if (group.Contains(Group.GroupName.Assistent))
-                appointments = (await appointmentService.GetAllAsync(appointment => appointment.Room)).ToList();
+                appointments = (await appointmentService.GetAllAsync(appointment => appointment.Room, a => a.Dentist, a => a.Patient)).ToList();
             else
                 appointments = await appointmentService.GetAppointmentByUser(id);
             return View(appointments);
