@@ -1,0 +1,60 @@
+@using TandheelkundigCentrum.Data.Models
+@model Rating?
+@{
+    ViewBag.Title = Model == null ? "Voeg Beoordeling toe" : "Wijzig Beoordeling";
+}
+
+
+<div>
+    <div class="d-flex flex-row justify-content-between">
+        <h1 class="display-4">Beoordeling @(Model == null ? "Toevoegen" : "Wijzigen")</h1>
+        <div class="d-flex align-items-center">
+            <a asp-action="Index">
+                <button type="button" class="btn btn-info">
+                    <i class="bi bi-houses"></i>
+                    Alle Beoordelingen
+                </button>
+            </a>
+        </div>
+    </div>
+    <form method="post">
+        <div class="form-group">
+            <label>Behandeling:</label>
+            <select asp-for="TreatmentId" class="form-control">
+                <option>-- Selecteer Behandeling --</option>
+                @foreach (Treatment treatment in ViewBag.UserTreatments)
+                {
+                    <option value="@treatment.Id">@treatment.Name</option>
+                }
+            </select>
+            <span asp-validation-for="TreatmentId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="duration">Aantal sterren</label>
+            <input type="number" required class="form-control" id="amount" min="1" max="5" asp-for="Amount" placeholder="5" value="@Model?.Amount">
+        </div>
+        <br>
+        @if (Model != null)
+        {
+            <input type="hidden" class="form-control" id="id" asp-for="Id" value="@Model.Id">
+        }
+
+        <div class="d-flex flex-row">
+            <div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check"></i>@(Model == null ? "Voeg toe" : "Wijzig")
+                </button>
+            </div>
+            &ensp;
+            @if (Model != null)
+            {
+                <a asp-action="Delete" asp-route-id="@Model.Id">
+                    <button type="button" class="btn btn-danger">
+                        <i class="bi bi-trash"></i>
+                        Verwijder
+                    </button>
+                </a>
+            }
+        </div>
+    </form>
+</div>
