@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
+Console.WriteLine(configuration.GetConnectionString("ApplicationDbContext"));
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ApplicationDbContext")) );
 
 var app = builder.Build();
