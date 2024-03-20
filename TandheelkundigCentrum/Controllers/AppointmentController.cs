@@ -10,6 +10,7 @@ using TandheelkundigCentrum.Services;
 
 namespace TandheelkundigCentrum.Controllers
 {
+    [AuthFilter(Group.GroupName.Admin, Group.GroupName.Assistent, Group.GroupName.Dentist)]
     public class AppointmentController(ApplicationDbContext context) : Controller
     {
         AppointmentService appointmentService = new(context);
