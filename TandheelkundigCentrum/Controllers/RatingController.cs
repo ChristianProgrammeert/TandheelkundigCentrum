@@ -7,28 +7,36 @@ using TandheelkundigCentrum.Services;
 namespace TandheelkundigCentrum.Controllers
 {
     [AuthFilter(Group.GroupName.Admin, Group.GroupName.Assistent, Group.GroupName.Dentist)]
-    public class TreatmentController : Controller
+    public class RatingController : Controller
     {
-        private readonly TreatmentService treatmentService;
-        public TreatmentController(ApplicationDbContext context) { 
-            treatmentService = new TreatmentService(context);
+        private readonly RatingService ratingService;
+        public RatingController(ApplicationDbContext context) { 
+            ratingService = new RatingService(context);
         }
         public async Task<IActionResult> IndexAsync()
         {
-            var treatments = await treatmentService.GetAllAsync();
-            return View(treatments);
+            var ratings = await ratingService.GetAllAsync();
+            return View(ratings);
+        }
+
+        private async Task fillViewBag()
+        {
+            var token = HttpContext.Request.Cookies["Token"];
+            var id = new JwtService().GetUserId(token);
+            ViewBag.UserTreatments = await ratingService.GetUserTreatments(Guid.Parse(id));
         }
 
         /// <summary>
         /// View edit page with the treatment with the given id, if id is given.
         /// </summary>
-        public async Task<IActionResult> Edit(int? treatmentId)
+        public async Task<IActionResult> Rate(int? ratingId)
         {
-            Treatment? treatment = treatmentId == null
+            await fillViewBag();
+            Rating? rating = ratingId == null
                 ? null
-                : await treatmentService.GetByIdAsync(treatmentId.Value);
+                : await ratingService.GetByIdAsync(ratingId.Value);
 
-            return View(treatment);
+            return View(rating);
         }
 
         /// <summary>
@@ -36,19 +44,17 @@ namespace TandheelkundigCentrum.Controllers
         /// Redirect to the view page of the new or updated treatment.
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Edit(int? id, Treatment treatment)
+        public async Task<IActionResult> Rate(int? id, Rating rating)
         {
             if (id == null)
             {
-                treatment.Archived = false;
-                treatment = await treatmentService.AddAsync(treatment);
+                rating = await ratingService.AddAsync(rating);
             }
             else
             {
-                treatment.Archived = true;
-                treatment = await treatmentService.UpdateAsync(treatment);
+                rating = await ratingService.UpdateAsync(rating);
             }
-            return RedirectToAction("View", new { id = treatment.Id });
+            return RedirectToAction("Index");
         }
 
         /// <summary>
@@ -58,16 +64,8 @@ namespace TandheelkundigCentrum.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(int id)
         {
-            await treatmentService.DeleteAsync(id);
+            await ratingService.DeleteAsync(id);
             return RedirectToAction("Index");
-        }
-
-        /// <summary>
-        /// View view page with the treatment with the given id.
-        /// </summary>
-        public async Task<ViewResult> View(int id)
-        {
-            return View(await treatmentService.GetTreatment(id));
         }
     }
 }
