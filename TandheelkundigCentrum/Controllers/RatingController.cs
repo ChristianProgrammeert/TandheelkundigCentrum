@@ -6,7 +6,7 @@ using TandheelkundigCentrum.Services;
 
 namespace TandheelkundigCentrum.Controllers
 {
-    [AuthFilter(Group.GroupName.Admin, Group.GroupName.Assistent, Group.GroupName.Dentist)]
+    [AuthFilter(Group.GroupName.Patient)]
     public class RatingController : Controller
     {
         private readonly RatingService ratingService;
