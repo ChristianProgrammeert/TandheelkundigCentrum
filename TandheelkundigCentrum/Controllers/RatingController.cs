@@ -15,7 +15,7 @@ namespace TandheelkundigCentrum.Controllers
         }
         public async Task<IActionResult> IndexAsync()
         {
-            var ratings = await ratingService.GetAllAsync();
+            var ratings = await ratingService.GetAllAsync(r => r.Treatment);
             return View(ratings);
         }
 
