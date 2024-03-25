@@ -29,7 +29,7 @@ namespace TandheelkundigCentrum.Controllers
         /// <summary>
         /// View edit page with the treatment with the given id, if id is given.
         /// </summary>
-        public async Task<IActionResult> Rate(int? ratingId)
+        public async Task<IActionResult> Edit(int? ratingId)
         {
             await fillViewBag();
             Rating? rating = ratingId == null
@@ -44,7 +44,7 @@ namespace TandheelkundigCentrum.Controllers
         /// Redirect to the view page of the new or updated treatment.
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Rate(int? id, Rating rating)
+        public async Task<IActionResult> Edit(int? id, Rating rating)
         {
             if (id == null)
             {
