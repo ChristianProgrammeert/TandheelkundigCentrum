@@ -27,14 +27,14 @@ public class User : IBaseEntity<Guid>
     public string Email { get; set; }
     public string Phone { get; set; }
     public string? Insurer { get; set; }
-    public Collection<Appointment> DentistAppointments { get; set; }
-    public Collection<Appointment> PatientAppointments { get; set; }
-    public Collection<Group> Groups { get; internal set; }
+    public Collection<Appointment> DentistAppointments { get; set; } = [];
+    public Collection<Appointment> PatientAppointments { get; set; } = [];
+    public List<Group> Groups { get; internal set; } = [];
 
     [NotMapped]
     public List<Appointment> Appointments
     {
-        get => [.. DentistAppointments, .. PatientAppointments];
+        get => [.. DentistAppointments ?? [] , .. PatientAppointments ?? []];
     }
 
 

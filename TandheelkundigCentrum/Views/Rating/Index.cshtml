@@ -1,16 +1,16 @@
-﻿@model IEnumerable<TandheelkundigCentrum.Data.Models.Treatment>
+﻿@model IEnumerable<TandheelkundigCentrum.Data.Models.Rating>
 @{
-	ViewData["Title"] = "Behandelingen";
+	ViewData["Title"] = "Beoordelingen";
 }
 
 <div>
     <div class="d-flex flex-row justify-content-between">
-        <h1 class="display-4">Behandelingen</h1>
+        <h1 class="display-4">Beoordelingen</h1>
         <div class="d-flex align-items-center">
             <a asp-action="Edit">
                 <button type="button" class="btn btn-success">
                     <i class="bi bi-house-add"></i>
-                    Behandeling Toevoegen
+                    Beoordeling toevoegen
                 </button>
             </a>
         </div>
@@ -19,56 +19,39 @@
         <thead>
             <tr>
                 <th scope="col">Behandelingnaam</th>
-                <th scope="col">Behandelingsduur</th>
-                <th scope="col">Behandelingskosten</th>
+                <th scope="col">Beoordeling</th>
                 <th scope="col">
                     <div class="d-flex flex-row float-end">
-                    Bewerk
+                    Wijzigen
                     </div>
-				</th>
-				<th scope="col">
-					<div class="d-flex flex-row float-end">
-						Verwijder
-					</div>
 				</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var treatment in Model)
+            @foreach (var rating in Model)
             {
                 <tr>
                     <td scope="row">
-                        <a asp-action="View" asp-route-id="@treatment.Id">
-                            @treatment.Name
-                        </a>
+                        @rating.Treatment.Name
                     </td>
                     <td scope="row">
-                        @treatment.Duration
-                        <span>minuten</span>
-                    </td>
-                    <td scope="row">
-                        <span>€</span>
-                        @treatment.Price
+                        @rating.Amount
+                        <span>
+                            van de 5
+                            <i>
+                                <img src="~/assets/img/toothbrush.png" width="25" height="25">
+                            </i>
+                        </span>
                     </td>
                     <td>
                         <div class="d-flex flex-row float-end">
-                            <a asp-action="Edit" asp-route-treatmentId="@treatment.Id">
+                            <a asp-action="Edit" asp-route-ratingId="@rating.Id">
                                 <button type="button" class="btn btn-warning">
                                     <i class="bi bi-pencil-square"></i>
                                     Bewerk
                                 </button>
                             </a>
                         </div>
-					</td>
-					<td>
-						<div class="d-flex flex-row float-end">
-							<a asp-action="Delete" asp-route-id="@treatment.Id">
-								<button type="button" class="btn btn-danger">
-									<i class="bi bi-trash"></i>
-									Verwijder
-								</button>
-							</a>
-						</div>
 					</td>
                 </tr>
             }

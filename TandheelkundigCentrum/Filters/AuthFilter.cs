@@ -24,7 +24,7 @@ public class AuthFilter(params Group.GroupName[] groups) : ActionFilterAttribute
             !Service.ValidateToken(context.HttpContext.Request.Cookies["Token"]))
         {
             if (allowedPaths.All(s => s != context.HttpContext.Request.Path))
-                context.HttpContext.Response.Redirect($"Auth/Login/");
+                context.HttpContext.Response.Redirect("/Auth/Login/");
             return;
         }
 

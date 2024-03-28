@@ -20,7 +20,7 @@
     <form method="post">
         <div class="form-group">
             <label for="name">Kamernaam</label>
-            <input type="text" class="form-control" id="name" asp-for="Name" placeholder="Name" value="@Model?.Name">
+            <input type="text" class="form-control" id="name" asp-for="Name" maxlength="69" placeholder="Name" value="@Model?.Name">
         </div>
         <br>
         @if (Model != null)

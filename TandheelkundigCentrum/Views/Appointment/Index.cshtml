@@ -45,7 +45,7 @@
                         @appointment.Patient.Fullname
                     </td>
                     <td>
-                        @appointment.Treatments.Aggregate("", (s, treatment) => s = $"{s}, {treatment.Name}")
+                        @appointment.Treatments.Aggregate("", (s, treatment) => s = $"{s}{treatment.Name}, ")
                     </td>
                     <td>
                         @appointment.Room.Name

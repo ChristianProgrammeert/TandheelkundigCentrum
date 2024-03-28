@@ -2,9 +2,18 @@
 @{
     ViewBag.Title = "Behandelingen";
 }
-<div >
+<style>
+    /* CSS for vertical centering */
+    .vertical-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+</style>
+<div class="container">
     <div class="d-flex flex-row justify-content-between">
-        <h1 class="display-4">@Model.Name</h1>
+        <h1 class="display-4">Behandeling Gegevens:</h1>
         <div class="d-flex align-items-center">
             <a asp-action="Index">
                 <button type="button" class="btn btn-info">
@@ -13,12 +22,39 @@
                 </button>
             </a>
             &ensp;
-            <a asp-action="Edit" asp-route-treatmentId="@Model.Id">
+            <a asp-action="Edit" asp-route-roomId="@Model.Id">
                 <button type="button" class="btn btn-warning">
                     <i class="bi bi-pen"></i>
                     Behandeling Bewerken
                 </button>
             </a>
+        </div>
+    </div>
+    <div class="row vertical-center">
+        <!-- Table Section -->
+        <div class="col-md-6">
+            <div>
+                <table class="table table-striped table-sm">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Behandelingnaam:</th>
+                            <td>@Model.Name</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Behandelingsduur:</th>
+                            <td>@Model.Duration <span>minuten</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Behandelingskosten:</th>
+                            <td><span>€</span>@Model.Price</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Image Section -->
+        <div class="col-md-6">
+            <img src="~/assets/img/tandarts_kamer.jpg" class="img-fluid" alt="Responsive image">
         </div>
     </div>
 </div>
